@@ -9,7 +9,8 @@ const walletConnectProjectId = '8357e233f452d783ce19a83b8bef7928'
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [hardhat, sepolia, mainnet],
   [
-    alchemyProvider({apiKey: import.meta.env.VITE_ALCHEMY_API_KEY ?? ''}),
+    // Uncomment this if you want to deploy
+    // alchemyProvider({apiKey: import.meta.env.VITE_ALCHEMY_API_KEY ?? ''}),
     publicProvider(),
   ],
 )
