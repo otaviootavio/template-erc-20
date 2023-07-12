@@ -1,0 +1,46 @@
+{
+	"name": "frontend-template",
+	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/polichain/frontend"
+	},
+	"author": "Polichain",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/polichain/web3-dapp-template/issues"
+	},
+	"homepage": "https://github.com/polichain/frontend#readme",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@emotion/react": "^11.11.1",
+		"@emotion/styled": "^11.11.0",
+		"@fontsource/roboto": "^5.0.3",
+		"@mui/icons-material": "^5.11.16",
+		"@mui/lab": "^5.0.0-alpha.134",
+		"@mui/material": "^5.13.5",
+		"@rainbow-me/rainbowkit": "^1.0.0",
+		"buffer": "^6.0.3",
+		"process": "^0.11.10",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"util": "^0.12.4",
+		"viem": "~0.3.36",
+		"wagmi": "^1.0.6"
+	},
+	"peerDependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.9",
+		"@types/react-dom": "^18.0.3",
+		"@vitejs/plugin-react": "^4.0.0",
+		"typescript": "^5.0.4",
+		"vite": "^4.3.5"
+	}
+}
