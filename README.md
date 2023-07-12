@@ -28,3 +28,9 @@ Hardhat is configured to easily deploy localy (on a hardhat node), in the Sapoli
 This project, as any other, have room for improvement. And, of course, Web3 evolves fast, and we want to always keep it up to date, so feel free to sugest improvements, updates, adding lacking information and etc.
 
 Star the repo to support the work! :D
+
+### Developement hacks
+
+#### Getting test users
+After running the node with hardhat, you will receive some accounts. If you want to simulate differents users at the browser you can log all the fake accounts at your browser's wallet. Doing it on a new browser's profile can also avoid miss click on actual wallets.
+
