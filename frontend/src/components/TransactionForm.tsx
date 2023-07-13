@@ -19,7 +19,7 @@ const TransactionForm = () => {
   const [snackbarText, setSnackbarText] = useState<string>('');
   const [severitySnackbar, setSeveritySnackbar] = useState<AlertColor>('error');
   const balance = useBalance({
-    token: contractConfig[1].address as Address,
+    token: contractConfig.address as Address,
     address: account.address,
     watch: true,
   })
@@ -38,8 +38,8 @@ const TransactionForm = () => {
   };
 
   const approveWrite = useContractWrite({
-    address: contractConfig[1].address as Address,
-    abi: contractConfig[1].abi,
+    address: contractConfig.address as Address,
+    abi: contractConfig.abi,
     functionName: 'approve',
     onError(error) {
       setSeveritySnackbar('error')
@@ -55,16 +55,23 @@ const TransactionForm = () => {
   const waitApprove = useWaitForTransaction({ hash: approveWrite.data?.hash })
 
   const sharesData = useContractRead({
-    address: contractConfig[0].address as Address,
-    abi: contractConfig[0].abi,
+    address: contractConfig.address as Address,
+    abi: contractConfig.abi,
     functionName: 'balanceOf',
     args: [account.address],
     watch: true
   })
 
+  // const symbol_token = useContractRead({
+  //   address: contractConfig.address as Address,
+  //   abi: contractConfig.abi,
+  //   functionName: 'symbol_',
+  //   watch: true
+  // })
+
   const depositWrite = useContractWrite({
-    address: contractConfig[0].address as Address,
-    abi: contractConfig[0].abi,
+    address: contractConfig.address as Address,
+    abi: contractConfig.abi,
     functionName: 'deposit',
     onError(error) {
       setSeveritySnackbar('error')
@@ -80,8 +87,8 @@ const TransactionForm = () => {
   const waitDeposit = useWaitForTransaction({ hash: depositWrite.data?.hash })
 
   const withdrawWrite = useContractWrite({
-    address: contractConfig[0].address as Address,
-    abi: contractConfig[0].abi,
+    address: contractConfig.address as Address,
+    abi: contractConfig.abi,
     functionName: 'withdraw',
     onError(error) {
       setSeveritySnackbar('error')
@@ -110,7 +117,7 @@ const TransactionForm = () => {
 
   const handleApprove= () => {
     approveWrite.write({
-      args: [contractConfig[0].address as Address, BigInt(amount)],
+      args: [contractConfig.address as Address, BigInt(amount)],
     })
   };
 
@@ -129,6 +136,9 @@ const TransactionForm = () => {
 
         <Typography variant="body1">Saldo: {balance.data?.formatted ?? 0}</Typography>
         <Typography variant="body1">Shares: {sharesData.data?.toString() ?? 0}</Typography>
+        {/* <Typography variant="body1">Shares: {symbol_token.data?.toString() ?? 0}</Typography> */}
+
+        <div>{}</div>
       </Stack>
       <br />
       <Stack direction="row" spacing={2}>
