@@ -1,201 +1,118 @@
-import React, { ChangeEventHandler, useEffect, useState } from 'react';
-import { TextField, Stack, Typography, Box, Snackbar, AlertProps } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton'
-import { Address, useAccount, useBalance, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import contractConfig from '../contracts/contract-config.json'
-import MuiAlert, { AlertColor } from '@mui/material/Alert';
+import React, { ChangeEventHandler, useEffect, useState } from "react";
+import {
+  TextField,
+  Typography,
+  Box,
+  Snackbar,
+  AlertProps,
+} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {
+  Address,
+  useAccount,
+  useBalance,
+  useContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
+import contractConfig from "../contracts/contract-config.json";
+import MuiAlert, { AlertColor } from "@mui/material/Alert";
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert( props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 const TransactionForm = () => {
-  const account = useAccount()
-  const [recipient, setRecipient] = useState<string>('')
+  const account = useAccount();
+  const [recipient, setRecipient] = useState<string>("");
   const [amount, setAmount] = useState<bigint>(0n);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarText, setSnackbarText] = useState<string>('');
-  const [severitySnackbar, setSeveritySnackbar] = useState<AlertColor>('error');
+  const [snackbarText, setSnackbarText] = useState<string>("");
+  const [severitySnackbar, setSeveritySnackbar] = useState<AlertColor>("error");
   const balance = useBalance({
     token: contractConfig.address as Address,
     address: account.address,
     watch: true,
-  })
+  });
 
   const handleAmountChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setAmount(BigInt(event.target.value) * 1000000000000000000n);
   };
 
-
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
     setOpenSnackbar(false);
   };
 
-  const approveWrite = useContractWrite({
-    address: contractConfig.address as Address,
-    abi: contractConfig.abi,
-    functionName: 'approve',
-    onError(error) {
-      setSeveritySnackbar('error')
-      setOpenSnackbar(true)
-      setSnackbarText(error.message || '')
-    },
-    onSuccess(data) {
-      setSeveritySnackbar('success')
-      setOpenSnackbar(true)
-      setSnackbarText('Aprovação de valor concluída!')
-    },
-  })
-  const waitApprove = useWaitForTransaction({ hash: approveWrite.data?.hash })
-
-
-  const depositWrite = useContractWrite({
-    address: contractConfig.address as Address,
-    abi: contractConfig.abi,
-    functionName: 'deposit',
-    onError(error) {
-      setSeveritySnackbar('error')
-      setOpenSnackbar(true)
-      setSnackbarText(error.message || '')
-    },
-    onSuccess(data) {
-      setSeveritySnackbar('success')
-      setOpenSnackbar(true)
-      setSnackbarText('Deposito efetuado com sucesso!')
-    },
-  })
-  const waitDeposit = useWaitForTransaction({ hash: depositWrite.data?.hash })
-
-  const withdrawWrite = useContractWrite({
-    address: contractConfig.address as Address,
-    abi: contractConfig.abi,
-    functionName: 'withdraw',
-    onError(error) {
-      setSeveritySnackbar('error')
-      setOpenSnackbar(true)
-      setSnackbarText(error.message || '')
-    },
-    onSuccess(data) {
-      setSeveritySnackbar('success')
-      setOpenSnackbar(true)
-      setSnackbarText('Saque efetuado com sucesso!')
-    },
-  })
-  const waitWithdraw = useWaitForTransaction({ hash: withdrawWrite.data?.hash })
-  
-  const handleDeposit = () => {
-    depositWrite.write({
-      args: [BigInt(amount)],
-    })
-  };
-
-  const handleWithdraw = () => {
-    withdrawWrite.write({
-      args: [BigInt(amount)],
-    })
-  };
-
-  const handleApprove= () => {
-    approveWrite.write({
-      args: [contractConfig.address as Address, BigInt(amount)],
-    })
-  };
-
   const sendTokenWrite = useContractWrite({
     address: contractConfig.address as Address,
     abi: contractConfig.abi,
-    functionName: 'transfer',
+    functionName: "transfer",
     onError(error) {
-      setSeveritySnackbar('error')
-      setOpenSnackbar(true)
-      setSnackbarText(error.message || '')
+      setSeveritySnackbar("error");
+      setOpenSnackbar(true);
+      setSnackbarText(error.message || "");
     },
     onSuccess(data) {
-      setSeveritySnackbar('success')
-      setOpenSnackbar(true)
-      setSnackbarText('Transferencia efetuada com sucesso!')
+      setSeveritySnackbar("success");
+      setOpenSnackbar(true);
+      setSnackbarText("Transferencia efetuada com sucesso!");
     },
-  })
-  const waitSendToken = useWaitForTransaction({ hash: sendTokenWrite.data?.hash })
+  });
+
+  const waitSendToken = useWaitForTransaction({
+    hash: sendTokenWrite.data?.hash,
+  });
 
   const handleSendToken = () => {
     sendTokenWrite.write({
       args: [recipient as Address, BigInt(amount)],
-    })
+    });
   };
 
   const handleRecipientChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setRecipient(event.target.value);
   };
   return (
-    <Box>
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <TextField
-          id="standard-number"
-          label="Amount"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          variant="standard"
-          onChange={handleAmountChange}
-        />
-        <TextField
-          label="Recipient"
-          type="text"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          variant="standard"
-          onChange={handleRecipientChange}
-        />
-
-        <Typography variant="body1">
-          Saldo: {balance.data?.formatted ?? 0}
-        </Typography>
-      </Stack>
+    <Box
+      component="form"
+      sx={{ "& .MuiTextField-root": { m: 1, width: "30ch" } }}
+      noValidate
+      autoComplete="off"
+    >
+      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        ERC-20
+      </Typography>
+      <Typography variant="h5" component="div">
+        Balance: {balance.data?.formatted ?? 0}
+      </Typography>
+      <TextField
+        id="standard-number"
+        label="Amount"
+        type="number"
+        variant="filled"
+        onChange={handleAmountChange}
+      />
+      <TextField
+        label="Recipient"
+        type="text"
+        variant="filled"
+        onChange={handleRecipientChange}
+      />
       <br />
-      <Stack direction="row" spacing={2}>
-        <LoadingButton
-          loading={waitDeposit.isLoading || depositWrite.isLoading}
-          variant="outlined"
-          color="primary"
-          onClick={handleDeposit}
-        >
-          Deposit
-        </LoadingButton>
-        <LoadingButton
-          loading={waitWithdraw.isLoading || withdrawWrite.isLoading}
-          variant="outlined"
-          color="secondary"
-          onClick={handleWithdraw}
-        >
-          Withdraw
-        </LoadingButton>
-        <LoadingButton
-          loading={waitApprove.isLoading || approveWrite.isLoading}
-          variant="outlined"
-          color="warning"
-          onClick={handleApprove}
-        >
-          Approve
-        </LoadingButton>
-        <LoadingButton
-          loading={waitSendToken.isLoading || waitSendToken.isLoading}
-          variant="outlined"
-          color="warning"
-          onClick={handleSendToken}
-        >
-          SendToken
-        </LoadingButton>
-      </Stack>
+      <LoadingButton
+        loading={waitSendToken.isLoading || waitSendToken.isLoading}
+        variant="outlined"
+        color="warning"
+        onClick={handleSendToken}
+      >
+        SendToken
+      </LoadingButton>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

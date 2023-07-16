@@ -9,7 +9,7 @@ export async function main() {
     const erc20 = await erc20Factory.deploy();
 
     console.log("ERC20 Token deployed to:", erc20.address);
-    erc20.mint("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", BigInt(10**18));
+    erc20.mint("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", BigInt(100*10**19));
     saveFrontendFiles( erc20, "MyToken");
 
     return { erc20 };
