@@ -1,1 +1,3 @@
 frontend/src/contracts/contract-config.json
+contract/package-lock.json
+contract/hardhat.config.js
